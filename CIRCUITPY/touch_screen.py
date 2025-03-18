@@ -1,5 +1,6 @@
 from adafruit_simplemath import map_range
 from filters import XYSampleFilter
+from user.config import CONFIG
 
 ##############################
 # Touch screen state
@@ -16,23 +17,13 @@ class TouchScreen:
         self, 
         is_touched_fn,
         read_data_fn,
-        min_x,
-        max_x,
-        min_y,
-        max_y,
         display_width, 
-        display_height,
-        invert_y,        
+        display_height
     ):
         self._is_touched_fn = is_touched_fn
         self._read_data_fn = read_data_fn
-        self._min_x = min_x
-        self._max_x = max_x
-        self._min_y = min_y
-        self._max_y = max_y
         self._display_width = display_width
         self._display_height = display_height
-        self._invert_y = invert_y        
         self._filter = XYSampleFilter(6, 10)
         self._touch_state = TOUCH_STATE_IDLE
 
@@ -61,13 +52,13 @@ class TouchScreen:
         if self._is_touched_fn():
             y_sample, x_sample, _ = self._read_data_fn()
 
-            x_sample = map_range(x_sample, self._min_x, self._max_x, 0, self._display_width)
+            x_sample = map_range(x_sample, CONFIG.touch_calibration.min_x, CONFIG.touch_calibration.max_x, 0, self._display_width)
 
             # invert Y axis if necessary
-            if self._invert_y:
-                y_sample = map_range(y_sample, self._min_y, self._max_y, self._display_height, 0)
+            if CONFIG.touch_calibration.invert_y:
+                y_sample = map_range(y_sample, CONFIG.touch_calibration.min_y, CONFIG.touch_calibration.max_y, self._display_height, 0)
             else:
-                y_sample = map_range(y_sample, self._min_y, self._max_y, 0, self._display_height)
+                y_sample = map_range(y_sample, CONFIG.touch_calibration.min_y, CONFIG.touch_calibration.max_y, 0, self._display_height)
 
             # The very first reading can be very erratic, so throw it away.
             if self._touch_state == TOUCH_STATE_IDLE:

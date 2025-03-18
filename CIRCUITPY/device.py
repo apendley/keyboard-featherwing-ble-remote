@@ -15,17 +15,16 @@ from adafruit_hid.keyboard import Keyboard
 from adafruit_hid.keyboard_layout_us import KeyboardLayoutUS
 from adafruit_hid.consumer_control import ConsumerControl
 from adafruit_hid.mouse import Mouse
+from adafruit_simplemath import constrain
+from user.config import CONFIG
 
 BATTERY_UPDATE_INTERVAL = 1000
-
-BLE_NEOPIXEL_COLOR = 0x0000FF
 BLE_SCANNING_BLINK_INTERVAL = 500
 IDLE_BACKLIGHT_SHUTOFF_DURATION = 30 * 1000
-
-LOW_VOLTAGE = 3.6
+LOW_VOLTAGE = constrain(CONFIG.low_voltage_warning, 3.2, 4.0)
 
 class Device:
-    def __init__(self, name, display_controller, keyboard, touch_screen, neopixel, activity_index, brightness_index):
+    def __init__(self, display_controller, keyboard, touch_screen, neopixel, activity_index, brightness_index):
         self._display_controller = display_controller
         self._keyboard = keyboard
         self._touch_screen = touch_screen
@@ -71,8 +70,7 @@ class Device:
         self._activity_index = activity_index
 
         # BLE Device info
-        self._name = name
-        self._device_info = DeviceInfoService(software_revision="1.0.0", manufacturer="Aaron Pendley")
+        self._device_info = DeviceInfoService(software_revision="1.1.0", manufacturer="Aaron Pendley")
 
         # BLE HID service
         self._ble_hid = HIDService()
@@ -83,10 +81,10 @@ class Device:
         self._advertisement.appearance = 961
 
         self._scan_response = Advertisement()
-        self._scan_response.complete_name = self._name
+        self._scan_response.complete_name = CONFIG.ble_name
 
         self._ble_radio = adafruit_ble.BLERadio()
-        self._ble_radio.name = self._name
+        self._ble_radio.name = CONFIG.ble_name
 
         # Track connection state transtitions
         self._is_connected = self._ble_radio.connected
@@ -278,14 +276,14 @@ class Device:
 
     def _update_ble_neopixel(self):
         if self.is_connected:
-            self.neopixel.fill(BLE_NEOPIXEL_COLOR)
+            self.neopixel.fill(CONFIG.neopixel_color)
         else:
             if self._last_ble_scanning_blink_time is None or ticks_diff(ticks_ms(), self._last_ble_scanning_blink_time) >= 500:
                 self._last_ble_scanning_blink_time = ticks_ms()            
                 self._ble_scanning_blink_state = not self._ble_scanning_blink_state
 
                 if self._ble_scanning_blink_state:
-                    self.neopixel.fill(BLE_NEOPIXEL_COLOR)
+                    self.neopixel.fill(CONFIG.neopixel_color)
                 else:
                     self.neopixel.fill(0)
 
