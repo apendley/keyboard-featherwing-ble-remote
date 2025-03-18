@@ -122,79 +122,79 @@ neopixel.fill(0)
 
 
 ##############################
-# Load configuration
+# Load preferences
 ##############################
 from collections import namedtuple
 import struct
 from user import colors
 from user.activities import ACTIVITIES
 
-# Simple type representing our config data structure
-Config = namedtuple('Config', [
+# Simple type representing our preferences data structure
+Preferences = namedtuple('Preferences', [
     'activity_index', 
     'color_index',
     'brightness_index'
 ])
 
-# Our config info is saved here
-CONFIG_FILE = 'sd/config.dat'
+# Our preferences info is saved here
+PREFS_FILE = 'sd/prefs.dat'
 
 # Handy in case we need to delete it for some reason
 # try:
-#     os.remove(CONFIG_FILE)
+#     os.remove(PREFS_FILE)
 # except:
 #     pass
 
-# Load config from SD card into current config
-def load_config():
+# Load preferences from SD card into current preferences
+def load_prefs():
     global sd_card_detected
 
     if sd_card_detected:
         try:
-            with open(CONFIG_FILE, 'rb') as f:
+            with open(PREFS_FILE, 'rb') as f:
                 packed = f.read(3)
                 unpacked = struct.unpack('BBB', packed)
 
-                config = Config(
+                preferences = Preferences(
                     activity_index=min(unpacked[0], len(ACTIVITIES) - 1),
                     color_index=min(unpacked[1], len(colors.ALL) - 1),
                     brightness_index=min(unpacked[2], brightness.MAX_INDEX)
                 )
 
-                print(f"Loaded {config}")
-                return config
+                print(f"Loaded {preferences}")
+                return preferences
 
         except Exception as e:
-            print("Error loading config:", e)
+            print("Error loading preferences:", e)
 
-    return Config(activity_index=0, color_index=0, brightness_index=brightness.DEFAULT_INDEX)
+    return Preferences(activity_index=0, color_index=0, brightness_index=brightness.DEFAULT_INDEX)
 
-# Save current config to SD card
-def save_config(activity_index, color_index, brightness_index):
+# Save current preferences to SD card
+def save_prefs(activity_index, color_index, brightness_index):
     global sd_card_detected
 
     if sd_card_detected:
         try:
-            with open(CONFIG_FILE, 'wb') as f:
+            with open(PREFS_FILE, 'wb') as f:
                 packed = struct.pack('BBB', activity_index, color_index, brightness_index)
                 f.write(packed)
-                print("Saved config")
+                print("Saved preferences")
         except Exception as e:
-            print("Failed to save config:", e)
+            print("Failed to save preferences:", e)
 
-# Attempt to load the last saved configuration from the SD card.
-loaded_config = load_config()
+# Attempt to load the last saved preferences from the SD card.
+loaded_prefs = load_prefs()
 
 # Set the UI color for the display controller
-display_controller.color_index = loaded_config.color_index
+display_controller.color_index = loaded_prefs.color_index
 loading_label.color = display_controller.foreground_color
 
 # Update the display, keyboard, and neopixel brightness.
 # When we create the Device object we'll hand over the brightness duties,
 # but since we haven't made the Device yet we'll update the hardware directly now.
-keyboard.display_backlight = brightness.get_display_brightness(loaded_config.brightness_index)
-keyboard.keyboard_backlight = brightness.get_keyboard_brightness(loaded_config.brightness_index)
-neopixel.brightness = brightness.get_neopixel_brightness(loaded_config.brightness_index)
+keyboard.display_backlight = brightness.get_display_brightness(loaded_prefs.brightness_index)
+keyboard.keyboard_backlight = brightness.get_keyboard_brightness(loaded_prefs.brightness_index)
+neopixel.brightness = brightness.get_neopixel_brightness(loaded_prefs.brightness_index)
 
 
 ##############################
@@ -223,13 +223,8 @@ from touch_screen import TouchScreen
 touch_screen = TouchScreen(
     is_touched_fn=is_touched_fn,
     read_data_fn=touch_input.read_data,
-    min_x=200,
-    max_x=3600,
-    min_y=250,
-    max_y=3700,
     display_width=display.width, 
-    display_height=display.height,
-    invert_y=True
+    display_height=display.height
 )
 
 
@@ -239,13 +234,12 @@ touch_screen = TouchScreen(
 from device import Device
 
 device = Device(
-    name="Keyboard Featherwing Remote",
     display_controller=display_controller,
     keyboard=keyboard,
     touch_screen=touch_screen,
     neopixel=neopixel,
-    activity_index=loaded_config.activity_index,
-    brightness_index=loaded_config.brightness_index
+    activity_index=loaded_prefs.activity_index,
+    brightness_index=loaded_prefs.brightness_index
 )
 
 # Hide the loading label
@@ -257,7 +251,7 @@ loading_label = None
 ##############################
 import gc
 from remote_mode import RemoteMode
-from config_mode import ConfigMode
+from preferences_mode import PreferencesMode
 
 current_mode = None
 
@@ -276,18 +270,18 @@ def set_mode(mode):
     gc.collect()
     print(f"free memory: {gc.mem_free()}")
 
-# Callback for remote mode; called when user chooses to go to config mode
-def on_goto_config():
-    goto_config_mode()
+# Callback for remote mode; called when user chooses to go to preferences mode
+def on_goto_prefs():
+    goto_prefs_mode()
 
 # Go to remote mode
 def goto_remote_mode():
-    remote_mode = RemoteMode(device=device, on_goto_config=on_goto_config)
+    remote_mode = RemoteMode(device=device, on_goto_prefs=on_goto_prefs)
     set_mode(remote_mode)
 
 # Callback for config mode; called when user makes activity selection
 def on_activity_selected():
-    save_config(
+    save_prefs(
         activity_index=device.activity_index, 
         color_index=display_controller.color_index,
         brightness_index=device.brightness_index
@@ -295,9 +289,9 @@ def on_activity_selected():
 
     goto_remote_mode()
 
-# Go to config mode
-def goto_config_mode():
-    config_mode = ConfigMode(device=device, on_activity_selected=on_activity_selected)
+# Go to preferences mode
+def goto_prefs_mode():
+    config_mode = PreferencesMode(device=device, on_activity_selected=on_activity_selected)
     set_mode(config_mode)
 
 # Start in remote mode

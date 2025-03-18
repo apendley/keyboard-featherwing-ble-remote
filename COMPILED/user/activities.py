@@ -83,65 +83,65 @@ ACTIVITIES = ActivityList(
     ),
 
     ACTIVITY_2=Activity(
-        name="Apple TV",
-        show_mouse_message=False,
-
+        name="Photo Booth",
+        show_mouse_message=True,
+        
         L1=Action(
-            hid_type=HID_CONSUMER_CONTROL, 
-            code=ConsumerControlCode.VOLUME_DECREMENT, 
-            icon=SPEAKER_MINUS
+            hid_type=HID_MOUSE, 
+            code=Mouse.LEFT_BUTTON,
+            icon=LEFT_MOUSE
         ),
-
+        
         L2=Action(
             hid_type=HID_CONSUMER_CONTROL, 
-            code=ConsumerControlCode.VOLUME_INCREMENT, 
-            icon=SPEAKER_PLUS
+            code=ConsumerControlCode.PLAY_PAUSE,
+            icon=PLAY_PAUSE
         ),
-
+        
         R1=Action(
             hid_type=HID_KEYBOARD, 
-            code=Keycode.ESCAPE, 
-            icon=BACK
+            code=Keycode.RETURN, 
+            icon=RETURN,
         ),
-
+        
         R2=Action(
-            hid_type=HID_CONSUMER_CONTROL, 
-            code=CC_MENU, 
-            icon=HOME
+            hid_type=HID_KEYBOARD, 
+            code=Keycode.ESCAPE,
+            icon="ESC"
         ),
-
+        
         UP=Action(
             hid_type=HID_KEYBOARD, 
-            code=Keycode.UP_ARROW, 
+            code=Keycode.UP_ARROW,
             icon=UP_ARROW
         ),
-
+        
         DOWN=Action(
             hid_type=HID_KEYBOARD, 
-            code=Keycode.DOWN_ARROW, 
+            code=Keycode.DOWN_ARROW,
             icon=DOWN_ARROW
         ),
-
+        
         LEFT=Action(
             hid_type=HID_KEYBOARD, 
-            code=Keycode.LEFT_ARROW, 
+            code=Keycode.LEFT_ARROW,
             icon=LEFT_ARROW
         ),
         
         RIGHT=Action(
             hid_type=HID_KEYBOARD, 
-            code=Keycode.RIGHT_ARROW, 
+            code=Keycode.RIGHT_ARROW,
             icon=RIGHT_ARROW
         ),
         
         SELECT=Action(
             hid_type=HID_KEYBOARD, 
-            code=Keycode.RETURN, 
+            code=Keycode.RETURN,
             icon=RETURN
         )
-    ),        
+    ),
 
-    ACTIVITY_3=Activity(
+   ACTIVITY_3=Activity(
         name="Mac",
         show_mouse_message=True,
 
@@ -200,121 +200,61 @@ ACTIVITIES = ActivityList(
     ),
 
     ACTIVITY_4=Activity(
-        name="Windows",
-        show_mouse_message=True,
-        
+        name="Apple TV",
+        show_mouse_message=False,
+
         L1=Action(
-            hid_type=HID_MOUSE, 
-            code=Mouse.LEFT_BUTTON,
-            icon=LEFT_MOUSE
+            hid_type=HID_CONSUMER_CONTROL, 
+            code=ConsumerControlCode.VOLUME_DECREMENT, 
+            icon=SPEAKER_MINUS
         ),
-        
+
         L2=Action(
-            hid_type=HID_MOUSE, 
-            code=Mouse.RIGHT_BUTTON,
-            icon=RIGHT_MOUSE
+            hid_type=HID_CONSUMER_CONTROL, 
+            code=ConsumerControlCode.VOLUME_INCREMENT, 
+            icon=SPEAKER_PLUS
         ),
-        
+
         R1=Action(
             hid_type=HID_KEYBOARD, 
-            code=Keycode.CONTROL,
-            icon="Ctrl"
+            code=Keycode.ESCAPE, 
+            icon=BACK
         ),
-        
+
         R2=Action(
-            hid_type=HID_KEYBOARD, 
-            code=Keycode.ALT,
-            icon="Alt"
+            hid_type=HID_CONSUMER_CONTROL, 
+            code=CC_MENU, 
+            icon=HOME
         ),
-        
+
         UP=Action(
             hid_type=HID_KEYBOARD, 
-            code=Keycode.UP_ARROW,
+            code=Keycode.UP_ARROW, 
             icon=UP_ARROW
         ),
-        
+
         DOWN=Action(
             hid_type=HID_KEYBOARD, 
-            code=Keycode.DOWN_ARROW,
+            code=Keycode.DOWN_ARROW, 
             icon=DOWN_ARROW
         ),
-        
+
         LEFT=Action(
             hid_type=HID_KEYBOARD, 
-            code=Keycode.LEFT_ARROW,
+            code=Keycode.LEFT_ARROW, 
             icon=LEFT_ARROW
         ),
         
         RIGHT=Action(
             hid_type=HID_KEYBOARD, 
-            code=Keycode.RIGHT_ARROW,
+            code=Keycode.RIGHT_ARROW, 
             icon=RIGHT_ARROW
         ),
         
         SELECT=Action(
             hid_type=HID_KEYBOARD, 
-            code=Keycode.RETURN,
+            code=Keycode.RETURN, 
             icon=RETURN
         )
     )
-
-    # All labels, for testing various things
-    # ACTIVITY_4=Activity(
-    #     name="Edit (Windows)",
-    #     show_mouse_message=True,
-
-    #     L1=Action(
-    #         hid_type=HID_MOUSE, 
-    #         code=Mouse.LEFT_BUTTON,
-    #         icon="A"
-    #     ),
-        
-    #     L2=Action(
-    #         hid_type=HID_MOUSE, 
-    #         code=Mouse.RIGHT_BUTTON,
-    #         icon="FN"
-    #     ),
-        
-    #     R1=Action(
-    #         hid_type=HID_KEYBOARD, 
-    #         code=Keycode.CONTROL,
-    #         icon="CTRL"
-    #     ),
-        
-    #     R2=Action(
-    #         hid_type=HID_KEYBOARD, 
-    #         code=Keycode.ALT,
-    #         icon="ALT"
-    #     ),
-        
-    #     UP=Action(
-    #         hid_type=HID_KEYBOARD, 
-    #         code=Keycode.UP_ARROW,
-    #         icon="PgUp"
-    #     ),
-        
-    #     DOWN=Action(
-    #         hid_type=HID_KEYBOARD, 
-    #         code=Keycode.DOWN_ARROW,
-    #         icon="PgDn"
-    #     ),
-        
-    #     LEFT=Action(
-    #         hid_type=HID_KEYBOARD, 
-    #         code=Keycode.LEFT_ARROW,
-    #         icon="W"
-    #     ),
-        
-    #     RIGHT=Action(
-    #         hid_type=HID_KEYBOARD, 
-    #         code=Keycode.RIGHT_ARROW,
-    #         icon="DEL"
-    #     ),
-        
-    #     SELECT=Action(
-    #         hid_type=HID_KEYBOARD, 
-    #         code=Keycode.RETURN,
-    #         icon="SELECT"
-    #     )
-    # )
 )

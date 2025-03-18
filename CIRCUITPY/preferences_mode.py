@@ -10,13 +10,13 @@ from sprite_sheet import SpriteInstance
 
 from mode import Mode
 
-class ConfigMode(Mode):
+class PreferencesMode(Mode):
     def __init__(self, device, on_activity_selected):
         super().__init__(device)
         self._on_activity_selected = on_activity_selected
 
     def enter(self):
-        print("ConfigMode")
+        print("PreferencesMode")
 
         display = self.device.display_controller
 

@@ -19,9 +19,9 @@ BLUETOOTH_ANIMATION_FRAMES = [sprites.BT_01, sprites.BT_02, sprites.BT_03, sprit
 BLUETOOTH_ANIMATION_FRAME_COUNT = len(BLUETOOTH_ANIMATION_FRAMES)
 
 class RemoteMode(Mode):
-    def __init__(self, device, on_goto_config):
+    def __init__(self, device, on_goto_prefs):
         super().__init__(device)
-        self._on_goto_config = on_goto_config
+        self._on_goto_prefs = on_goto_prefs
 
         # Title-label-as-config-button
         self._title_label = None
@@ -229,9 +229,9 @@ class RemoteMode(Mode):
         # Check to see if the title label is touched and held.
         # If so, call the "goto config" callback and return
         if self._check_config_selected():
-            if self._on_goto_config:
-                self._on_goto_config()
-                self._on_goto_config = None
+            if self._on_goto_prefs:
+                self._on_goto_prefs()
+                self._on_goto_prefs = None
             return
 
         # Move the mouse, if the title button is not currently pressed.
